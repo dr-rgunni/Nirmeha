@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Indian Diabetes Risk Score</title>
+  </head>
+<body>
+
+<!-- Centered Logo at the top of the page -->
+<img src="vpsv.jpeg" alt="VPSV Logo" class="logo">
+
+<div class="container">
+  <h2>Department of Roganidana<br>VPSV Ayurveda College Kottakkal</h2>
+  <div class="subheading">Diabetes Screening Tool</div>
+  <h1>Indian Diabetes Risk Score (IDRS)</h1>
+  <form id="diabetes-risk-form">
+    <!-- Age Section -->
+    <div class="section">
+      <div class="section-title">Age:</div>
+      <div class="item">
+        <label for="age1">&lt;35 years</label>
+        <input type="radio" id="age1" name="age" value="0" onchange="checkSelections()">
+      </div>
+      <div class="item">
+        <label for="age2">35 - 49 years</label>
+        <input type="radio" id="age2" name="age" value="20" onchange="checkSelections()">
+      </div>
+      <div class="item">
+        <label for="age3">≥ 50 years</label>
+        <input type="radio" id="age3" name="age" value="30" onchange="checkSelections()">
+      </div>
+    </div>
+
+    <!-- Waist Circumference Section -->
+    <div class="section">
+      <div class="section-title">Waist circumference:</div>
+      <div class="item">
+        <label for="waist1">Waist &lt; 80 cm (female), &lt;90 cm (male)</label>
+        <input type="radio" id="waist1" name="waist" value="0" onchange="checkSelections()">
+      </div>
+      <div class="item">
+        <label for="waist2">Waist ≥ 80 - 89 cm (female), ≥ 90 - 99 cm (male)</label>
+        <input type="radio" id="waist2" name="waist" value="10" onchange="checkSelections()">
+      </div>
+      <div class="item">
+        <label for="waist3">Waist ≥ 90 cm (female), ≥ 100 cm (male)</label>
+        <input type="radio" id="waist3" name="waist" value="20" onchange="checkSelections()">
+      </div>
+    </div>
+
+    <!-- Physical Activity Section -->
+    <div class="section">
+      <div class="section-title">Physical activity:</div>
+      <div class="item">
+        <label for="activity1">Regular vigorous exercise or strenuous (manual) activities at home/work</label>
+        <input type="radio" id="activity1" name="activity" value="0" onchange="checkSelections()">
+      </div>
+      <div class="item">
+        <label for="activity2">Regular moderate exercise or moderate physical activity at home/work</label>
+        <input type="radio" id="activity2" name="activity" value="10" onchange="checkSelections()">
+      </div>
+      <div class="item">
+        <label for="activity3">Regular mild exercise or mild physical activity at home/work</label>
+        <input type="radio" id="activity3" name="activity" value="20" onchange="checkSelections()">
+      </div>
+      <div class="item">
+        <label for="activity4">No exercise and/or sedentary activities at home/work</label>
+        <input type="radio" id="activity4" name="activity" value="30" onchange="checkSelections()">
+      </div>
+    </div>
+
+    <!-- Family History Section -->
+    <div class="section">
+      <div class="section-title">Family history of diabetes:</div>
+      <div class="item">
+        <label for="family1">No diabetes in parents</label>
+        <input type="radio" id="family1" name="family" value="0" onchange="checkSelections()">
+      </div>
+      <div class="item">
+        <label for="family2">One parent is diabetic</label>
+        <input type="radio" id="family2" name="family" value="10" onchange="checkSelections()">
+      </div>
+      <div class="item">
+        <label for="family3">Both parents are diabetic</label>
+        <input type="radio" id="family3" name="family" value="20" onchange="checkSelections()">
+      </div>
+    </div>
+
+    <!-- Display Total Score and Risk Category -->
+    <div class="button-container">
+      <button type="button" class="calculate-btn" id="calculate-btn" onclick="calculateScore()" disabled>Calculate Score</button>
+      <button type="reset" class="reset-btn" onclick="resetForm()">Reset</button>
+    </div>
+    <p id="total-score">Total Score: </p>
+    <p id="risk-category">Risk Category: </p>
+  </form>
+  <div class="reference">
+    (Ref: V. Mohan et al. A simplified Indian Diabetes Risk Score for screening for undiagnosed diabetic subjects. J Assoc Physicians India (2005))
+  </div>
+</div>
+
+<script>
+  function checkSelections() {
+    const ageSelected = document.querySelector('input[name="age"]:checked');
+    const waistSelected = document.querySelector('input[name="waist"]:checked');
+    const activitySelected = document.querySelector('input[name="activity"]:checked');
+    const familySelected = document.querySelector('input[name="family"]:checked');
+    const calculateButton = document.getElementById('calculate-btn');
+    
+    // Enable button only if all sections have a selection
+    if (ageSelected && waistSelected && activitySelected && familySelected) {
+      calculateButton.disabled = false;
+      calculateButton.style.cursor = "pointer";
+      calculateButton.style.opacity = "1";
+    } else {
+      calculateButton.disabled = true;
+      calculateButton.style.cursor = "not-allowed";
+      calculateButton.style.opacity = "0.6";
+    }
+  }
+
+  function calculateScore() {
+    const selectedOptions = document.querySelectorAll('input[type="radio"]:checked');
+    let totalScore = 0;
+    selectedOptions.forEach(option => {
+      totalScore += parseInt(option.value);
+    });
+
+    // Display the total score
+    document.getElementById('total-score').innerText = "Total Score: " + totalScore;
+
+    // Determine risk category and apply color
+    const riskCategoryElement = document.getElementById('risk-category');
+    let riskCategory;
+    if (totalScore < 30) {
+      riskCategory = "Low Risk";
+      riskCategoryElement.className = "low-risk";
+    } else if (totalScore >= 30 && totalScore <= 50) {
+      riskCategory = "Medium Risk";
+      riskCategoryElement.className = "medium-risk";
+    } else if (totalScore >= 60) {
+      riskCategory = "High Risk";
+      riskCategoryElement.className = "high-risk";
+    } else {
+      riskCategory = "";
+      riskCategoryElement.className = "";
+    }
+
+    // Display the risk category
+    riskCategoryElement.innerText = "Risk Category: " + riskCategory;
+  }
+
+  function resetForm() {
+    // Reset score and category display to blank
+    document.getElementById('total-score').innerText = "Total Score: ";
+    const riskCategoryElement = document.getElementById('risk-category');
+    riskCategoryElement.innerText = "Risk Category: ";
+    riskCategoryElement.className = ""; // Remove risk color class
+    document.getElementById('calculate-btn').disabled = true; // Disable button on reset
+    document.getElementById('calculate-btn').style.cursor = "not-allowed";
+    document.getElementById('calculate-btn').style.opacity = "0.6";
+  }
+</script>
+
+</body>
+</html>
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Untitled Page</title>
+<meta name="generator" content="WYSIWYG Web Builder 15 - http://www.wysiwygwebbuilder.com">
+<link href="Untitled1.css" rel="stylesheet">
+<link href="index.css" rel="stylesheet">
+</head>
+<body>
+</body>
+</html>
